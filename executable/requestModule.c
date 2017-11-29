@@ -8,7 +8,7 @@
 
 void error(const char *msg) { perror(msg); exit(0); }
 
-void apiRequest(char* requestHost, int port, char* requestUrl, char* method)
+void apiRequest(char* requestHost, int port, char* requestUrl, char* method, char response[])
 {
     /* first what are we going to send and where are we going to send it? */
     int portno =        port;
@@ -20,7 +20,7 @@ void apiRequest(char* requestHost, int port, char* requestUrl, char* method)
     struct hostent *server;
     struct sockaddr_in serv_addr;
     int sockfd, bytes, sent, received, total;
-    char message[1024],response[4096];
+    char message[1024];
 
     sprintf(message, "%s %s %s", method, requestUrl, httpRear);
 
@@ -60,8 +60,8 @@ void apiRequest(char* requestHost, int port, char* requestUrl, char* method)
     } while (sent < total);
 
     /* receive the response */
-    memset(response,0,sizeof(response));
-    total = sizeof(response)-1;
+    memset(response,0,4096);
+    total = 4095;
     received = 0;
     do {
         bytes = read(sockfd,response+received,total-received);
@@ -78,9 +78,5 @@ void apiRequest(char* requestHost, int port, char* requestUrl, char* method)
     /* close the socket */
     close(sockfd);
 
-    /* process response */
-    printf("Response:\n%s\n",response);
-
     return ;
 }
-

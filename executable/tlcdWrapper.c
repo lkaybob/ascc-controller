@@ -12,11 +12,13 @@
 
 #include "tlcdDefine.h"
 
-static int fd;
+int fd;
 
 int IsBusy(void)
 {
 	unsigned short wdata, rdata;
+
+//	printf("InBusy In: %d\n", fd);
 
 	wdata = SIG_BIT_RW;
 	write(fd ,&wdata,2);
@@ -38,6 +40,7 @@ int writeCmd(unsigned short cmd)
 {
 	unsigned short wdata ;
 
+//	printf("writeCmd IN\n");
 	if ( IsBusy())
 		return FALSE;
 
@@ -49,7 +52,7 @@ int writeCmd(unsigned short cmd)
 
 	wdata = cmd ;
 	write(fd ,&wdata,2);
-
+//	printf("writeCmd END\n");
 	return TRUE;
 }
 
@@ -155,7 +158,8 @@ int setCursorMode(int bMove , int bRightDir)
 int functionSet(void)
 {
 	unsigned short cmd = 0x0038; // 5*8 dot charater , 8bit interface , 2 line
-
+	
+//	printf("functionSet IN\n");
 	if (!writeCmd(cmd))
 		return FALSE;
 	return TRUE;
@@ -215,3 +219,21 @@ int clearScreen(int nline)
 	return TRUE;
 }
 
+void initializeTlcd(int line) {
+	// [line] 0: All, 1: Line 1, 2: Line2
+	const int bCursorOn = 0;
+	const int bBlink = 0;
+	// For clean screen, disable cursor!
+	functionSet();
+	clearScreen(line);
+	displayMode(0, 0, 1);
+	setDDRAMAddr(1,15);
+	usleep(2000);
+}
+
+void writeTlcd(int line, char* str) {
+	const int nColumn = 0;
+	setDDRAMAddr(nColumn, line);
+	usleep(2000);
+	writeStr(str);
+}

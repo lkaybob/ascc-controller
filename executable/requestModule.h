@@ -5,4 +5,4 @@
 #define METHOD_GET 	"GET"
 #define METHOD_POST 	"POST"
 
-void apiRequest(char* requestHost, int port, char* requestUrl, char* method);
+void apiRequest(char* requestHost, int port, char* requestUrl, char* method, char response[]);
