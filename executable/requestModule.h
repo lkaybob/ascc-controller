@@ -6,3 +6,4 @@
 #define METHOD_POST 	"POST"
 
 void apiRequest(char* requestHost, int port, char* requestUrl, char* method, char response[]);
+void bleCommnd(char* requestHost, int port, char* command, char response[]);

@@ -226,7 +226,7 @@ void initializeTlcd(int line) {
 	// For clean screen, disable cursor!
 	functionSet();
 	clearScreen(line);
-	displayMode(0, 0, 1);
+	displayMode(bCursorOn, bBlink, 1);
 	setDDRAMAddr(1,15);
 	usleep(2000);
 }
