@@ -127,26 +127,4 @@ void bleCommand(char* requestHost, int port, char* command, char response[])
 
     close(sockfd);
     return ;
-
-    /* receive the response */
-    memset(response,0,4096);
-    total = 4095;
-    received = 0;
-    do {
-        bytes = read(sockfd,response+received,total-received);
-        if (bytes < 0)
-            error("ERROR reading response from socket");
-        if (bytes == 0)
-            break;
-        received+=bytes;
-    } while (received < total);
-
-    if (received == total)
-        error("ERROR storing complete response from socket");
-
-    /* close the socket */
-    close(sockfd);
-
-    return ;
 }
-

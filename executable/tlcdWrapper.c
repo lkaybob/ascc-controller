@@ -12,7 +12,8 @@
 
 #include "tlcdDefine.h"
 
-int fd;
+
+int tlcdfd;
 
 int IsBusy(void)
 {
@@ -21,38 +22,38 @@ int IsBusy(void)
 //	printf("InBusy In: %d\n", fd);
 
 	wdata = SIG_BIT_RW;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 
 	wdata = SIG_BIT_RW | SIG_BIT_E;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 
-	read(fd,&rdata ,2);
+	read(tlcdfd,&rdata ,2);
 
 	wdata = SIG_BIT_RW;
-	write(fd,&wdata,2);
+	write(tlcdfd,&wdata,2);
 
 	if (rdata &  BUSY_BIT)
 		return TRUE;
 
 	return FALSE;
 }
-int writeCmd(unsigned short cmd)
+int writeCmdTlcd(unsigned short cmd)
 {
 	unsigned short wdata ;
 
-//	printf("writeCmd IN\n");
+//	printf("writeCmdTlcd IN\n");
 	if ( IsBusy())
 		return FALSE;
 
 	wdata = cmd;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 
 	wdata = cmd | SIG_BIT_E;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 
 	wdata = cmd ;
-	write(fd ,&wdata,2);
-//	printf("writeCmd END\n");
+	write(tlcdfd ,&wdata,2);
+//	printf("writeCmdTlcd END\n");
 	return TRUE;
 }
 
@@ -84,7 +85,7 @@ int setDDRAMAddr(int x , int y)
 	
 //	printf("setDDRAMAddr w1 :0x%X\n",cmd);
 
-	if (!writeCmd(cmd | SET_DDRAM_ADD_DEF))
+	if (!writeCmdTlcd(cmd | SET_DDRAM_ADD_DEF))
 	{
 		perror("setDDRAMAddr error\n");
 		return FALSE;
@@ -113,7 +114,7 @@ int displayMode(int bCursor, int bCursorblink, int blcd  )
 		cmd |= DIS_LCD;
 	}
 
-	if (!writeCmd(cmd | DIS_DEF))
+	if (!writeCmdTlcd(cmd | DIS_DEF))
 		return FALSE;
 
 	return TRUE;
@@ -127,13 +128,13 @@ int writeCh(unsigned short ch)
 		return FALSE;
 
 	wdata = SIG_BIT_RS | ch;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 
 	wdata = SIG_BIT_RS | ch | SIG_BIT_E;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 
 	wdata = SIG_BIT_RS | ch;
-	write(fd ,&wdata,2);
+	write(tlcdfd ,&wdata,2);
 	usleep(1000);
 	return TRUE;
 
@@ -150,7 +151,7 @@ int setCursorMode(int bMove , int bRightDir)
 	if (bRightDir)
 		cmd |= MODE_SET_DIR_RIGHT;
 
-	if (!writeCmd(cmd))
+	if (!writeCmdTlcd(cmd))
 		return FALSE;
 	return TRUE;
 }
@@ -160,7 +161,7 @@ int functionSet(void)
 	unsigned short cmd = 0x0038; // 5*8 dot charater , 8bit interface , 2 line
 	
 //	printf("functionSet IN\n");
-	if (!writeCmd(cmd))
+	if (!writeCmdTlcd(cmd))
 		return FALSE;
 	return TRUE;
 }
@@ -193,7 +194,7 @@ int clearScreen(int nline)
 			perror("clearScreen error\n");
 			return FALSE;
 		}
-		if (!writeCmd(CLEAR_DISPLAY))
+		if (!writeCmdTlcd(CLEAR_DISPLAY))
 			return FALSE;
 		return TRUE;
 	}

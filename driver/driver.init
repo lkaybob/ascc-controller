@@ -1,0 +1,15 @@
+insmod 7segdrv.ko
+insmod buzzerDrv.ko
+insmod dmdrv.ko
+insmod keydrv.ko
+insmod oleddrv.ko
+insmod tlcddrv.ko
+
+ifconfig eth0 192.168.1.1
+
+../testApp/tlcdtest r
+../testApp/tlcdtest c 0 0 2 12
+../testApp/tlcdtest w 1 TEST
+../testApp/tlcdtest r
+
+../testApp/oledtest i

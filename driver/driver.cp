@@ -1,0 +1,10 @@
+tftp -g 192.168.1.1 -r 7segdrv.ko
+tftp -g 192.168.1.1 -r bcmdhd.ko
+tftp -g 192.168.1.1 -r buzzerDrv.ko
+tftp -g 192.168.1.1 -r driver.init
+tftp -g 192.168.1.1 -r keydrv.ko
+tftp -g 192.168.1.1 -r oleddrv.ko
+tftp -g 192.168.1.1 -r tlcddrv.ko
+tftp -g 192.168.1.1 -r wpa.step.1
+tftp -g 192.168.1.1 -r wpa.step.2
+tftp -g 192.168.1.1 -r wpa.step.3
