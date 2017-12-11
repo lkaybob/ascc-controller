@@ -1,5 +1,5 @@
 #define AUTH_PATH "/api/getClassAuth?si_num=%d"
-#define HOST	  "13.124.255.163"
+#define HOST	  "13.124.5.168"
 #define PORT	  3000
 
 #define METHOD_GET 	"GET"

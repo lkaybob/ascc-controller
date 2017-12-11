@@ -8,6 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #define TRUE	1
 #define FALSE	0
@@ -15,6 +16,8 @@
 #define DRIVER_NAME		"/dev/cnoled"
 
 int oledfd;
+
+extern pthread_mutex_t thread_mutex;
 
 unsigned long simple_strtoul(char *cp, char **endp,unsigned int base)
 {
@@ -428,23 +431,25 @@ int Init(void)
 	wdata[0] = 0xAF;
 	writeCmdOled(1,wdata);
 
-
-
-
-
 	return TRUE;
 }
 
 void oledInit() {
+	pthread_mutex_lock(&thread_mutex);
+	// printf("Locked @ OLED\n");
 	Init();
-	usleep(1000000);
+	usleep(2000);
+	pthread_mutex_unlock(&thread_mutex);
+	// printf("Unlocked @ OLED\n");
 }
 
 void oledLoadImage(char* file) {
+	pthread_mutex_lock(&thread_mutex);
 	reset();
-	usleep(1000000);
+	usleep(2000);
 	Init();
-	usleep(1000000);
+	usleep(20000);
 	imageLoading(file);
-	usleep(300000);
+	usleep(1500000);
+	pthread_mutex_unlock(&thread_mutex);
 }

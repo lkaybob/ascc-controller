@@ -20,7 +20,7 @@ int checkLectureProgress() {
 	int retvalue;
 
 	read(dipswfd, &retvalue, 4);
-	printf("[dipsw] %d\n", retvalue);
+	// printf("[dipsw] %d\n", retvalue);
 
 	if(retvalue == SWON)
 		return TRUE;

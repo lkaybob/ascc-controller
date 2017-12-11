@@ -12,6 +12,7 @@
 
 #include "tlcdDefine.h"
 
+extern pthread_mutex_t thread_mutex;
 
 int tlcdfd;
 
@@ -225,6 +226,8 @@ void initializeTlcd(int line) {
 	const int bCursorOn = 0;
 	const int bBlink = 0;
 	// For clean screen, disable cursor!
+	pthread_mutex_lock(&thread_mutex);
+	// printf("Locked @ TLCD\n");
 	functionSet();
 	usleep(2000);
 	clearScreen(0);
@@ -232,12 +235,18 @@ void initializeTlcd(int line) {
 	displayMode(bCursorOn, bBlink, 1);
 	setDDRAMAddr(1,15);
 	usleep(2000);
+	pthread_mutex_unlock(&thread_mutex);
+	// printf("Unlocked @ TLCD\n");
 }
 
 void writeTlcd(int line, char* str) {
 	const int nColumn = 0;
+	pthread_mutex_lock(&thread_mutex);
+	// printf("Locked @ TLCD\n");
 	setDDRAMAddr(nColumn, line);
 	usleep(2000);
 	writeStr(str);
-	usleep(1000000);
+	usleep(500000);
+	pthread_mutex_unlock(&thread_mutex);
+	// printf("Unlocked @ TLCD\n");
 }

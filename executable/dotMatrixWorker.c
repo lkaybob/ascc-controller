@@ -12,6 +12,8 @@
 #include <unistd.h>
 #include <pthread.h>
 
+extern pthread_mutex_t thread_mutex;
+
 typedef struct {
 	int fd;
 	int value;
@@ -23,7 +25,11 @@ pthread_t dotid;
 void *dotMatrixThreadFunc(void *arg) {
 	
 	while(1) {
+		// pthread_mutex_lock(&thread_mutex);
+		// printf("Locked @ DM\n");
 		write(dmInitInfo.fd, &dmInitInfo.value, 4);
+		// pthread_mutex_unlock(&thread_mutex);
+		// printf("Unlocked @ DM\n");
 	}
 
 	pthread_exit(NULL);

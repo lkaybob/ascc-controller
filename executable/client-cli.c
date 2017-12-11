@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <time.h>
+#include <pthread.h>
 
 #include "requestModule.h"
 #include "tlcdWrapper.h"
@@ -17,6 +18,7 @@
 #include "7segWorker.h"
 #include "dipswitch.h"
 #include "jsmn.h"
+#include "bitmapRuntime.h"
 
 #define SVNSEGDRV "/dev/7segdrv"
 #define KMDRV   "/dev/kmsw"
@@ -32,6 +34,8 @@
 extern int tlcdfd;
 extern int oledfd;
 extern int dipswfd;
+
+pthread_mutex_t thread_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 int keyMatrixInput(int fd);
 void activateBuzzer(int fd);
@@ -75,26 +79,29 @@ int main(int argc, char **argv) {
    
 
    jsmn_init(&parser);
-   sevenSegWorker(1);
-   dotMatrixWorker(0);
+
 
 
    do {
 	do{
-      system("./testApp/bitmap testApp/main.bmp");
+      // system("./testApp/bitmap image/main.bmp");
+		clearBitmap();
+		setScreen("image/main.bmp", 0, 0);
       initializeTlcd(0);
       oledInit();
    
       // Main code goes here
       printf("Please enter your credential: ");
       authInfo  = keyMatrixInput(km);
-      system("./testApp/bitmap testApp/main-loading.bmp");
+      // system("./testApp/bitmap testApp/main-loading.bmp");
+// printf("Passed?\n");
+		setScreen("image/main-loading.bmp", 0, 0);
+printf("Passed!\n");
       sprintf(authPath, AUTH_PATH, authInfo);
       apiRequest(HOST, PORT, authPath, METHOD_GET, response);
-      usleep(500000);
 
       jsonData = strstr(response, denom);
-      printf("JSON Data: %x\n", jsonData);
+      // printf("JSON Data: %x\n", jsonData);
    
       if(jsonData != NULL) {
          jsonData += strlen(denom);
@@ -110,18 +117,22 @@ int main(int argc, char **argv) {
       if(authInfo == 1) {
          int dotMatrixValue = 31;
          int buzzerOff = 0;
-	printf("Response: %s\n", response);
-         system("./testApp/bitmap testApp/lecture-info.bmp");
-         printf("Welcome Professor Ko!\n");
-         // write(buzzer, &dotMatrixValue, 4);
-         // usleep(3000000);
-         // write(buzzer, &buzzerOff, 4);
+	// printf("Response: %s\n", response);
+        // system("./testApp/bitmap testApp/lecture-info.bmp");
+		setScreen("image/lecture-info.bmp", 0, 0);
+
+        printf("Welcome Professor Ko!\n");
+        // write(buzzer, &dotMatrixValue, 4);
+        // usleep(3000000);
+        // write(buzzer, &buzzerOff, 4);
          
-         oledInit();
          writeTlcd(1, "Logged_in_as:");
          writeTlcd(2, "Ko,_Young_Bae");
-         bleCommand("192.168.0.26", 8080, "123123/F066", response);
+         // bleCommand("192.168.0.26", 8080, "123123/F066", response);
          oledLoadImage("youngko.img");
+
+        sevenSegWorker(1);
+   		dotMatrixWorker(0);
 
          usleep(5000000);
 	break;
@@ -138,7 +149,8 @@ int main(int argc, char **argv) {
          j = checkLectureProgress();
          if(j == 0) {
             printf("Lecture Started\n");
-		activateBuzzer(buzzer);
+            setScreen("imgae/title.bmp", 38, 31);
+			// activateBuzzer(buzzer);
          break;
          }
 
@@ -156,6 +168,8 @@ int main(int argc, char **argv) {
          usleep(1000000);
       }while(1);
 
+      sevenSegCancel();
+      dotMatrixCancel();
       // Main code end
    }while(1);
 	printf("Canceled?\n");

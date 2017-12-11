@@ -13,6 +13,8 @@
 #include <pthread.h>
 #include <time.h>
 
+extern pthread_mutex_t thread_mutex;
+
 typedef struct {
 	int fd;
 	int value;
@@ -28,7 +30,11 @@ void *sevenSegThreadFunc(void *arg) {
 		time(&rawtime);
 		timeinfo = localtime(&rawtime);
 		ssInitInfo.value = (timeinfo->tm_hour+9)%24 * 10000 + timeinfo->tm_min * 100 + timeinfo->tm_sec;
+		// pthread_mutex_lock(&thread_mutex);
+		// printf("Locked @ 7Seg\n");
 		write(ssInitInfo.fd, &ssInitInfo.value, 4);
+		// pthread_mutex_unlock(&thread_mutex);
+		// printf("Unlocked @ 7Seg\n");
 	}
 
 	pthread_exit(NULL);
