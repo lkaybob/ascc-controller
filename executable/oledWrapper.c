@@ -442,9 +442,9 @@ void oledInit() {
 
 void oledLoadImage(char* file) {
 	reset();
-	usleep(2000000);
+	usleep(1000000);
 	Init();
-	usleep(2000000);
+	usleep(1000000);
 	imageLoading(file);
-	usleep(3000000);
+	usleep(300000);
 }

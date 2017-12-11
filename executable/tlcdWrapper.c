@@ -226,7 +226,9 @@ void initializeTlcd(int line) {
 	const int bBlink = 0;
 	// For clean screen, disable cursor!
 	functionSet();
-	clearScreen(line);
+	usleep(2000);
+	clearScreen(0);
+	usleep(2000);
 	displayMode(bCursorOn, bBlink, 1);
 	setDDRAMAddr(1,15);
 	usleep(2000);
@@ -237,4 +239,5 @@ void writeTlcd(int line, char* str) {
 	setDDRAMAddr(nColumn, line);
 	usleep(2000);
 	writeStr(str);
+	usleep(1000000);
 }

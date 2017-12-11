@@ -19,7 +19,7 @@ typedef struct {
 } ssInit;
 
 ssInit ssInitInfo;
-pthread_t tid;
+pthread_t sstid;
 
 void *sevenSegThreadFunc(void *arg) {
 	time_t rawtime;
@@ -38,8 +38,8 @@ pthread_t sevenSegWorker(int number) {
 
 	ssInitInfo.fd = open("/dev/7segdrv", O_RDWR);
 	ssInitInfo.value = number;
-	pthread_create(&tid, NULL, sevenSegThreadFunc, NULL);
-	return tid;
+	pthread_create(&sstid, NULL, sevenSegThreadFunc, NULL);
+	return sstid;
 }
 
 void sevenSegChanger(int number) {
@@ -47,6 +47,6 @@ void sevenSegChanger(int number) {
 }
 
 void sevenSegCancel(void) {
-	close(ssInitInfo.fd);
-	pthread_cancel(tid);
+	pthread_cancel(sstid);
+        close(ssInitInfo.fd);
 }

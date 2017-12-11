@@ -54,7 +54,7 @@ int keyMatrixInput(int fd) {
 				break;
 
 		}
-		usleep(750000);
+		usleep(700000);
 
 	
 	} while(data != KM_ENTER);
