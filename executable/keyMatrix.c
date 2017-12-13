@@ -15,15 +15,17 @@
 #define KM_ZERO		128+4
 #define KM_ROW		16
 
-int keyMatrixInput(int fd) {
-	int data = 0;
+int keyMatrixInput(int fd, int buzzerFd) {
 	int result = 0;
+	int data;
 	
 	printf("KMI In!\n");
 	do {
 		int col;
 		int row;
 		int input;
+		
+		data = 0;
 
 		read(fd, &data, 2);
 		col = data / KM_ROW;
@@ -40,9 +42,11 @@ int keyMatrixInput(int fd) {
 		switch(data) {
 			case KM_CLEAR:
 				result = 0;
+				keyBuzzer(buzzerFd);
 				break;
 			case KM_CANCEL:
 				result /= 10;
+				keyBuzzer(buzzerFd);
 				break;
 			default:
 		                if(data != 0 && data != KM_ENTER) {
@@ -50,6 +54,7 @@ int keyMatrixInput(int fd) {
                                 		input = (row - 1) * 3 + col;
 		                        result *= 10;
 		                        result += input;
+		                        keyBuzzer(buzzerFd);
 		                }
 				break;
 
@@ -64,3 +69,11 @@ int keyMatrixInput(int fd) {
 	return result;
 }
 
+int keyBuzzer(int fd) {
+	const int value = 17;
+	const int off = 0;
+
+	write(fd, &value, 4);
+	usleep(100000);
+	write(fd, &off, 4);
+}

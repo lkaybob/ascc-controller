@@ -146,19 +146,19 @@ void setScreen(char* filename, int offsetX, int offsetY) {
 	bitmapDef info;
 
     int i, j, k, t;
-    int coor_x = 0, coor_y = 0;
+    int coor_x, coor_y;
     int cols = 0, rows = 0;
     char    r, g, b;
     unsigned long   *ptr;
     unsigned long   pixel;
 
-    printf("Read? : %s\n", filename);
+    // printf("Read? : %s\n", filename);
     // pthread_mutex_lock(&thread_mutex);
     read_bmp(filename, &(info.pData), &(info.data), &cols, &rows);
     // pthread_mutex_unlock(&thread_mutex);
-    printf("Read!\n");
+    // printf("Read!\n");
 
-    printf("Compose?\n");
+    // printf("Compose?\n");
     for(j = 0; j < rows; j++)
     {
         k   =   j * cols * 3;
@@ -184,11 +184,12 @@ void setScreen(char* filename, int offsetX, int offsetY) {
 
     // printf("Inserted?\n");
     for(coor_y = 0; coor_y < rows; coor_y++) {
-        ptr =   (unsigned long*)info.pfbmap + (info.screen_width * coor_y);
+        ptr =   (unsigned long*)info.pfbmap + (info.screen_width * (coor_y + offsetX)) + offsetY;
         // printf("prt : %x\n", ptr);
 
         for (coor_x = 0; coor_x < cols; coor_x++) {
-            // printf("%d\n", info.bmpdata[coor_x + coor_y * cols]);
+            // if(offsetX > 0)
+                // printf("x: %d y: %d data: %d\n", coor_y, coor_x, info.bmpdata[coor_x + coor_y * cols]);
             *ptr++  =   info.bmpdata[coor_x + coor_y*cols];
         }
     }

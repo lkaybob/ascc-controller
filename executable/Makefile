@@ -3,7 +3,7 @@ CC=arm-none-linux-gnueabi-gcc
 boardExec: requestModule.o client-cli.o keyMatrix.o tlcdWrapper.o jsmn.o dotMatrixWorker.o 7segWorker.o oledWrapper.o dipswitch.o bitmap.o
 	$(CC) -o boardExec requestModule.o client-cli.o keyMatrix.o tlcdWrapper.o jsmn.o dotMatrixWorker.o 7segWorker.o oledWrapper.o dipswitch.o bitmap.o -lpthread
 
-client-cli: client-cli.c requestModule.h keyMatrix.h tlcdWrapper.h dotMatrixWorker.h oledWrapper.h dipswitch.h bitmapRuntime.h
+client-cli: client-cli.c requestModule.h keyMatrix.h tlcdWrapper.h dotMatrixWorker.h oledWrapper.h dipswitch.h bitmapRuntime.h client-cli.h
 	$(CC) -c client-cli.c
 
 requestModule: requestModule.c
